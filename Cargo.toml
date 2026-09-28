@@ -1,0 +1,73 @@
+[package]
+name = "bevy_net_session"
+version = "0.1.0"
+edition = "2021"
+# Bevy 0.19's own minimum.
+rust-version = "1.95"
+description = "Game-agnostic multiplayer sessions for Bevy on bevy_replicon + renet: host, join and leave over UDP or Steam, a version-checked join handshake with a game-provided validator, join timeouts and a clean teardown."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/warmar94/bevy_net_session"
+readme = "README.md"
+keywords = ["bevy", "multiplayer", "networking", "replicon", "steam"]
+categories = ["game-development", "network-programming"]
+# Not part of the published package.
+exclude = ["NOTES.md", "docs/", "/target"]
+
+[features]
+default = ["ip"]
+# Host and join over UDP (renet's netcode transport).
+ip = ["bevy_replicon_renet/renet_netcode"]
+# Host and join over Steam P2P (renet_steam 3.0.0). The game initialises Steam and inserts
+# `SteamNetClient`; without the feature a Steam request fails with `TransportUnavailable`.
+steam = ["dep:steamworks", "bevy_replicon_renet/renet_steam"]
+
+# Bevy is pinned EXACTLY and only its sub-crates are used, without default features: the crate adds
+# no Bevy feature a game did not ask for, and a game on Bevy 0.19.0 ends up with ONE Bevy.
+[dependencies]
+bevy_app = { version = "=0.19.0", default-features = false, features = ["std"] }
+bevy_ecs = { version = "=0.19.0", default-features = false, features = ["std"] }
+bevy_state = { version = "=0.19.0", default-features = false, features = ["std", "bevy_app"] }
+bevy_time = { version = "=0.19.0", default-features = false, features = ["std"] }
+# The replication layer and its renet backend. Transports are opt-in (features `ip` / `steam`).
+bevy_replicon = { version = "0.44.2", default-features = false, features = ["client", "server"] }
+bevy_replicon_renet = { version = "0.20.0", default-features = false, features = ["client", "server"] }
+# The handshake's two wire events.
+serde = { version = "1", default-features = false, features = ["std", "derive"] }
+# Bevy's logging goes through `tracing`; its subscriber (LogPlugin) picks these messages up.
+tracing = { version = "0.1", default-features = false, features = ["std"] }
+# Exactly the steamworks that renet_steam 3.0.0 accepts: two steamworks versions cannot link in
+# one game.
+steamworks = { version = "=0.12.2", optional = true }
+
+[dev-dependencies]
+# Tests + examples: MinimalPlugins, headless.
+bevy = { version = "=0.19.0", default-features = false, features = ["std", "bevy_log", "bevy_state"] }
+serde = { version = "1", features = ["derive"] }
+
+[[example]]
+name = "host_ip"
+required-features = ["ip"]
+
+[[example]]
+name = "join_ip"
+required-features = ["ip"]
+
+[[example]]
+name = "quick_start"
+required-features = ["ip"]
+
+# Real-Steam examples: need the `steam` feature and a running Steam client.
+[[example]]
+name = "host_steam"
+required-features = ["steam"]
+
+[[example]]
+name = "join_steam"
+required-features = ["steam"]
+
+[[test]]
+name = "loopback"
+required-features = ["ip"]
+
+[package.metadata.docs.rs]
+all-features = true
