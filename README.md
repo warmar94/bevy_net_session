@@ -395,15 +395,15 @@ fn main() {
 ### 9. Combining it with Steam lobbies
 
 Discovery is a separate concern. With a Steam lobby crate such as
-[`bevy_steam_lobby`](https://crates.io/crates/bevy_steam_lobby) the flow is: the host opens a
-session and a lobby carrying its SteamID64; a friend's "Join Game" or an accepted invite
+[`bevy_steam_kit`](https://crates.io/crates/bevy_steam_kit) (feature `lobby`) the flow is: the host
+opens a session and a lobby carrying its SteamID64; a friend's "Join Game" or an accepted invite
 becomes `JoinRequested`; the game joins the lobby; `LobbyEntered` gives the host's id; the game
-sends `JoinSession::steam(host)`. Let the lobby plugin be the one Steam callback pump.
+sends `JoinSession::steam(host)`. Let the Steam kit be the one Steam callback pump.
 
 ```rust,ignore
 use bevy::prelude::*;
 use bevy_net_session::*;
-use bevy_steam_lobby::*;
+use bevy_steam_kit::*;
 
 /// Host: session first, then a lobby that tells friends where to connect.
 fn host(mut session: MessageWriter<HostSession>) {
@@ -430,11 +430,15 @@ fn accept(mut requests: MessageReader<JoinRequested>, mut join: MessageWriter<Jo
 
 fn connect(
     mut entered: MessageReader<LobbyEntered>,
-    backend: Res<SteamLobbyBackendRes>,
+    backend: Res<SteamBackendRes>,
     mut join: MessageWriter<JoinSession>,
 ) {
     for ev in entered.read() {
-        let host = backend.0.lobby_data(ev.lobby, "host").and_then(|h| h.parse::<u64>().ok());
+        let host = backend
+            .0
+            .lobby()
+            .and_then(|l| l.lobby_data(ev.lobby, "host"))
+            .and_then(|h| h.parse::<u64>().ok());
         if let Some(host) = host {
             join.write(JoinSession::steam(host));
         }
