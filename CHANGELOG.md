@@ -6,7 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) (before 1.0, a breaking
 change or a Bevy / bevy_replicon / steamworks bump raises the minor version).
 
-## [0.1.0] - Unreleased
+## [0.1.1] - 2026-09-30
+
+Documentation only, no code changes.
+
+### Changed
+
+- README: the Steam lobby example (section 9) uses `bevy_steam_kit` (feature `lobby`), the
+  successor of the retired `bevy_steam_lobby`; install lines name the full version.
+
+## [0.1.0] - 2026-09-28
 
 First release, for Bevy 0.19.0, bevy_replicon 0.44.2, bevy_replicon_renet 0.20.0 (bevy_renet 5.0)
 and, optionally, steamworks 0.12.2.

@@ -81,7 +81,7 @@ Add the crate. From crates.io (once published):
 ```toml
 [dependencies]
 bevy = "0.19.0"
-bevy_net_session = "0.1"
+bevy_net_session = "0.1.1"
 ```
 
 or from the repository, pinned to a release tag:
@@ -89,7 +89,7 @@ or from the repository, pinned to a release tag:
 ```toml
 [dependencies]
 bevy = "0.19.0"
-bevy_net_session = { git = "https://github.com/warmar94/bevy_net_session", tag = "v0.1.0" }
+bevy_net_session = { git = "https://github.com/warmar94/bevy_net_session", tag = "v0.1.1" }
 ```
 
 A game that hosts when started with `host` and joins otherwise:
@@ -350,7 +350,7 @@ Enable the feature and add `steamworks` itself, at exactly the version this crat
 
 ```toml
 [dependencies]
-bevy_net_session = { version = "0.1", features = ["steam"] }
+bevy_net_session = { version = "0.1.1", features = ["steam"] }
 steamworks = "=0.12.2"
 ```
 
